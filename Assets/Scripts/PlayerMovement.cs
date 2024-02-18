@@ -13,17 +13,23 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
 
     public float speed = 7f;
-    public float jumpSpeed = 12f;
+    private float jumpSpeed = 12f;
+    private float extraJumpSpeed = 12f;
+    private float coyoteJumpSpeed = 16f;
     public float maxJumpSpeed = 12f;
-    public bool IsFacingRight = true;
-    [SerializeField] private bool IsJumping = false;
+    private bool IsFacingRight = true;
+    private bool IsJumping = false;
+    private int ExtraJumps = 1;
     
     private bool CountLastOnGroundTime = true;
 
     private bool wasJumping = false;
     private bool jumpCut = false;
-    [SerializeField] private float LastPressedJumpTime;
-	[SerializeField] private float LastOnGroundTime;
+    private float LastPressedJumpTime;
+	private float LastOnGroundTime;
+
+    private float coyoteTime;
+    private bool canCountCoyoteTime = true;
 
     private GameObject playerGFX;
 
@@ -32,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        jumpSpeed = maxJumpSpeed;
         playerGFX = this.gameObject.transform.GetChild(0).gameObject;
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
@@ -55,10 +62,14 @@ public class PlayerMovement : MonoBehaviour
         //Flips player sprite depending on if the player is facing right or not
         if(rb.velocity.x > 0) {
             IsFacingRight = true;
-            playerGFX.transform.localScale = new Vector3(1, 1, 1);
         }
         if(rb.velocity.x < 0) {
             IsFacingRight = false;
+        }
+
+        if(IsFacingRight) {
+            playerGFX.transform.localScale = new Vector3(1, 1, 1);
+        } else if(!IsFacingRight) {
             playerGFX.transform.localScale = new Vector3(-1, 1, 1);
         }
 
@@ -66,7 +77,22 @@ public class PlayerMovement : MonoBehaviour
         //Call Jump
         if(Input.GetButtonDown("Jump") && IsGrounded() && CanJump() && LastPressedJumpTime < 0) {
             IsJumping = true;
-            Jump();
+            Jump(false, false);
+        }
+
+        // Coyote Jump
+        if(Input.GetButtonDown("Jump") && !IsGrounded() && coyoteTime < 0 && coyoteTime > -0.06f) {
+            coyoteTime = 0;
+            canCountCoyoteTime = false;
+            IsJumping = true;
+            Jump(true, false);
+            print("coyote jump!");
+        }
+
+        // Extra Jump
+        if(Input.GetButtonDown("Jump") && !IsGrounded() && ExtraJumps > 0 && coyoteTime != 0) {
+            IsJumping = true;
+            Jump(false, true);
         }
 
         //Jump Cut
@@ -86,6 +112,14 @@ public class PlayerMovement : MonoBehaviour
             wasJumping = false;
         }
 
+        if(IsGrounded()) {
+            canCountCoyoteTime = false;
+            coyoteTime = -0.01f;
+            ExtraJumps = 1;
+        } else if(!IsGrounded()) {
+            canCountCoyoteTime = true;
+        }
+
         //Reset jumpcut
         if(jumpCut && IsGrounded()) {
             rb.gravityScale /= 1.5f;
@@ -96,12 +130,20 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //Jump
-    void Jump() {
+    void Jump(bool coyoteJump, bool ExtraJump) {
         LastPressedJumpTime = 0.5f;
         if(rb.velocity.y < 0) {
             jumpSpeed = 0;
         }
-        rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+        if(coyoteJump) {
+            rb.AddForce(Vector2.up * coyoteJumpSpeed, ForceMode2D.Impulse);
+        } else if(ExtraJump) {
+            ExtraJumps = 0;
+            rb.velocity = new Vector2(rb.velocity.x, extraJumpSpeed);
+        } else {
+            rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+        }
+        
     }
 
     //Check Jump details
@@ -137,6 +179,9 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime -= Time.deltaTime;
         if(CountLastOnGroundTime) {
             LastOnGroundTime -= Time.deltaTime;
+        }
+        if(canCountCoyoteTime) {
+            coyoteTime -= Time.deltaTime;
         }
     }
 
