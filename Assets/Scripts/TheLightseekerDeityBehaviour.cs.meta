@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 2438d1577334a674d8c1d889679bcdfb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - Player: {instanceID: 0}
+  - HitboxesPrefab: {fileID: 4725900164524794773, guid: ae0acfddf235fbc40a44ef0ffdc3c17d, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -33,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     private GameObject playerGFX;
 
+    public GameObject deity;
+
     #endregion
 
     // Start is called before the first frame update
