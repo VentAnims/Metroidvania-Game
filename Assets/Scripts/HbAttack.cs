@@ -39,6 +39,7 @@ public class HbAttack : MonoBehaviour
         if(other.tag == "Enemy") {
             other.GetComponent<EnemyStats>().health -= damage;
             Player.GetComponent<PlayerStats>().health += healing;
+            this.gameObject.SetActive(false);
         }
     }
 }

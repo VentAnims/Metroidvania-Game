@@ -36,7 +36,7 @@ public class TheLightseekerDeityBehaviour : MonoBehaviour
         GameOverseer = GameObject.FindGameObjectWithTag("Overseer");
         Instantiate(GameOverseer.GetComponent<GameOverseer>().LightseekerHitboxes, Player.transform.position, Quaternion.identity);
         HitboxesPrefab = GameObject.FindGameObjectWithTag("Hitboxes");
-        HitboxesPrefab.transform.parent = Player.transform;
+        HitboxesPrefab.transform.parent = Player.transform.GetChild(0).gameObject.transform;
         Auto1 = HitboxesPrefab.transform.GetChild(0).gameObject;
         Auto2 = HitboxesPrefab.transform.GetChild(1).gameObject;
         Auto3 = HitboxesPrefab.transform.GetChild(2).gameObject;
