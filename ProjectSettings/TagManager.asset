@@ -8,6 +8,7 @@ TagManager:
   - Overseer
   - Hitboxes
   - Enemy
+  - ArtifactSwitch
   layers:
   - Default
   - TransparentFX

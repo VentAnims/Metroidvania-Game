@@ -5,6 +5,7 @@ using UnityEngine;
 public class TheOutsiderDeityBehaviour : MonoBehaviour
 {
     //Delete everything and replace, using TheLightSeekerDeityBehaviour script :D
+    [Header("Prefabs to Load")]
     public GameObject Player;
     public GameObject HitboxesPrefab;
     public GameObject GameOverseer;
@@ -14,27 +15,26 @@ public class TheOutsiderDeityBehaviour : MonoBehaviour
     public GameObject Auto2;
     public GameObject Auto3;
 
-    private bool canAttack = true;
+    [Header("Cooldowns and dependencies")]
     private int attackNumber = 1;
     private float lastAttacktime = 0f;
     private bool canCountLastAttackTime = true;
-    private float attackCooldown = 0.3f;
+    private bool attackFinished = true;
+    private float attackCooldown = .4f;
 
-    public int autoDamage = 12;
-    public int ultDamage = 42;
-    public int autoHeal = 1;
+    //private bool canDash = true;
+    //private float dashCooldown = 1f;
+
+    [Header("Stats")]
+    public int autoDamage = 7;
+    public int ultDamage = 27;
+    public int autoHeal = 0;
     public int ultHeal = 0;
-    public int movementHeal = 0;
+    public int movementHeal = 2;
 
     void Awake() {
         Player = GameObject.FindGameObjectWithTag("Player");
         GameOverseer = GameObject.FindGameObjectWithTag("Overseer");
-        Instantiate(GameOverseer.GetComponent<GameOverseer>().LightseekerHitboxes, Player.transform.position, Quaternion.identity);
-        HitboxesPrefab = GameObject.FindGameObjectWithTag("Hitboxes");
-        HitboxesPrefab.transform.parent = Player.transform;
-        Auto1 = HitboxesPrefab.transform.GetChild(0).gameObject;
-        Auto2 = HitboxesPrefab.transform.GetChild(1).gameObject;
-        Auto3 = HitboxesPrefab.transform.GetChild(2).gameObject;
         Auto1.SetActive(false);
         Auto2.SetActive(false);
         Auto3.SetActive(false);
@@ -50,46 +50,42 @@ public class TheOutsiderDeityBehaviour : MonoBehaviour
     void Update()
     {
         AttackTimer();
-        if(Input.GetMouseButtonDown(0) && canAttack && lastAttacktime < 0) {
+       if(Input.GetMouseButtonDown(0) && lastAttacktime < 0 && attackFinished) {
             PlayerAttack();
         }
     }
 
     void PlayerAttack() {
-        canAttack = false;
-        canCountLastAttackTime = false;
-        lastAttacktime = 0.4f;
+        lastAttacktime = -0.1f;
+        attackFinished = false;
         if(attackNumber == 1) {
-            Auto1.gameObject.SetActive(true);
-            StartCoroutine(WaitForSec(attackCooldown));
-            Auto1.gameObject.SetActive(false);
+            Auto1.gameObject.SetActive(true);   
         }
         if(attackNumber == 2) {
             Auto2.gameObject.SetActive(true);
-            StartCoroutine(WaitForSec(attackCooldown));
-            Auto2.gameObject.SetActive(false);
         }
-        if(attackNumber == 3) {
+        if(attackNumber > 2) {
             Auto3.gameObject.SetActive(true);
-            StartCoroutine(WaitForSec(attackCooldown));
-            Auto3.gameObject.SetActive(false);
+            attackNumber = 0;
         }
-        if(attackNumber == 3) {
-            attackNumber = 1;
-        } else {
-            attackNumber++;
-        }
-        canAttack = true;
-        canCountLastAttackTime = true;
+        attackNumber++;
+        canCountLastAttackTime = false;
     }
 
     void AttackTimer() {
         if(canCountLastAttackTime) {
             lastAttacktime -= Time.deltaTime;
         }
-    }
-
-    IEnumerator WaitForSec(float time) {
-        yield return new WaitForSeconds(time);
+        if(!attackFinished) {
+            attackCooldown -= Time.deltaTime;
+            if(attackCooldown <= 0) {
+                Auto1.gameObject.SetActive(false);
+                Auto2.gameObject.SetActive(false);
+                Auto3.gameObject.SetActive(false);
+                canCountLastAttackTime = true;
+                attackFinished = true;
+                attackCooldown = 1f;
+            }
+        }
     }
 }

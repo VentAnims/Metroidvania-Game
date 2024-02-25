@@ -22,7 +22,7 @@ public class TheLightseekerDeityBehaviour : MonoBehaviour
     private float attackCooldown = .4f;
 
     private bool canDash = true;
-    private float dashCooldown = 1f;
+    //private float dashCooldown = 1f;
 
     [Header("Stats")]
     public int autoDamage = 7;
@@ -34,12 +34,6 @@ public class TheLightseekerDeityBehaviour : MonoBehaviour
     void Awake() {
         Player = GameObject.FindGameObjectWithTag("Player");
         GameOverseer = GameObject.FindGameObjectWithTag("Overseer");
-        Instantiate(GameOverseer.GetComponent<GameOverseer>().LightseekerHitboxes, Player.transform.position, Quaternion.identity);
-        HitboxesPrefab = GameObject.FindGameObjectWithTag("Hitboxes");
-        HitboxesPrefab.transform.parent = Player.transform.GetChild(0).gameObject.transform;
-        Auto1 = HitboxesPrefab.transform.GetChild(0).gameObject;
-        Auto2 = HitboxesPrefab.transform.GetChild(1).gameObject;
-        Auto3 = HitboxesPrefab.transform.GetChild(2).gameObject;
         Auto1.SetActive(false);
         Auto2.SetActive(false);
         Auto3.SetActive(false);
