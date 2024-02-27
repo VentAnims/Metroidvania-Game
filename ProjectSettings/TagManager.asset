@@ -9,6 +9,7 @@ TagManager:
   - Hitboxes
   - Enemy
   - ArtifactSwitch
+  - PlayerDetects
   layers:
   - Default
   - TransparentFX

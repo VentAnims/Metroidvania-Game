@@ -21,6 +21,7 @@ public class TheOutsiderDeityBehaviour : MonoBehaviour
     private bool canCountLastAttackTime = true;
     private bool attackFinished = true;
     private float attackCooldown = .4f;
+    public float maxAttackCd = .2f;
 
     //private bool canDash = true;
     //private float dashCooldown = 1f;
@@ -43,7 +44,7 @@ public class TheOutsiderDeityBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        attackCooldown = maxAttackCd;
     }
 
     // Update is called once per frame
@@ -84,7 +85,7 @@ public class TheOutsiderDeityBehaviour : MonoBehaviour
                 Auto3.gameObject.SetActive(false);
                 canCountLastAttackTime = true;
                 attackFinished = true;
-                attackCooldown = 1f;
+                attackCooldown = maxAttackCd;
             }
         }
     }

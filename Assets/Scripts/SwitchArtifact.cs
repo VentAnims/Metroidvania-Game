@@ -87,7 +87,7 @@ public class SwitchArtifact : MonoBehaviour
         canCountSwitchCD = true;
         switchCD -= Time.deltaTime;
 
-        if(switchCD < -1f && canCountSwitchCD) {
+        if(switchCD < -5f && canCountSwitchCD) {
             switch(artifactToHave) {
                 case 1:
                     SwitchAnimator.SetBool("Switch1", false);

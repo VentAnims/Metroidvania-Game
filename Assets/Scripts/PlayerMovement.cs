@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private float extraJumpSpeed = 12f;
     private float coyoteJumpSpeed = 16f;
     public float maxJumpSpeed = 12f;
-    private bool IsFacingRight = true;
+    [HideInInspector] public bool IsFacingRight = true;
     private bool IsJumping = false;
     private int ExtraJumps = 1;
     
@@ -132,7 +132,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //Jump
-    void Jump(bool coyoteJump, bool ExtraJump) {
+    public void Jump(bool coyoteJump, bool ExtraJump) {
         LastPressedJumpTime = 0.5f;
         if(rb.velocity.y < 0) {
             jumpSpeed = 0;
