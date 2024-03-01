@@ -35,6 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject deity;
 
+    private float fallSpeedYDampingChangeThreshold;
+
     #endregion
 
     // Start is called before the first frame update
@@ -44,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         playerGFX = this.gameObject.transform.GetChild(0).gameObject;
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
+
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
     }
 
     // Update is called once per frame
@@ -52,6 +56,16 @@ public class PlayerMovement : MonoBehaviour
         Timers();
         JumpChecks();
         Movement();
+
+        if(rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling) {
+            CameraManager.instance.LerpYDamping(true);
+        }
+
+        if(rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.LerpedFromPlayerFalling) {
+            CameraManager.instance.LerpedFromPlayerFalling = false;
+
+            CameraManager.instance.LerpYDamping(false);
+        }
     }
 
     #region functions
