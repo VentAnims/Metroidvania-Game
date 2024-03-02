@@ -125,4 +125,18 @@ public class CameraManager : MonoBehaviour
             yield return null;
         }
     }
+
+    public void SwapCamera(CinemachineVirtualCamera cameraFromLeft, CinemachineVirtualCamera cameraFromRight, Vector2 triggerExitDirection) {
+        if(currentCamera == cameraFromLeft && triggerExitDirection.x > 0f) {
+            cameraFromRight.enabled = true;
+            cameraFromLeft.enabled = false;
+            currentCamera = cameraFromRight;
+            framingTransposer = currentCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+        } else if(currentCamera == cameraFromRight && triggerExitDirection.x < 0f) {
+            cameraFromLeft.enabled = true;
+            cameraFromRight.enabled = false;
+            currentCamera = cameraFromRight;
+            framingTransposer = currentCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+        }
+    }
 }
